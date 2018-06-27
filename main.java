@@ -10,47 +10,74 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class main{
     static int aux = 0;
     public static void main(String []args){
 
-        JFrame f = new JFrame("ROSMI");
-        JLabel label1, label2, label3, label4, label5, label6, label7, label8, label9;
-        JPanel subPanel = new JPanel();
-        // subPanel.setPreferredSize (new Dimension(400, 400));
-        subPanel.setBackground (Color.BLACK);
+        // Scanner sysIn = new Scanner(System.in);
 
-        //ImageIcon imgicon = new ImageIcon(criarImagem()) ;
+        BufferedImage [] imagens = new BufferedImage[9];
 
-        label1 = new JLabel (criarImagem());
-        label2 = new JLabel (criarImagem());
-        label3 = new JLabel (criarImagem());
-        label4 = new JLabel (criarImagem());
-        label5 = new JLabel (criarImagem());
-        label6 = new JLabel (criarImagem());
-        label7 = new JLabel (criarImagem());
-        label8 = new JLabel (criarImagem());
-        label9 = new JLabel (criarImagem());
-        
-        subPanel.add (label1);
-        subPanel.add (label2);
-        subPanel.add (label3);
-        subPanel.add (label4);
-        subPanel.add (label5);
-        subPanel.add (label6);
-        subPanel.add (label7);
-        subPanel.add (label8);
-        subPanel.add (label9);
-        
-        f.setSize(917,917);
-        f.setVisible(true);  
-        f.add(subPanel);
+        for(int I=0;I<9;I++){
+            imagens[I] = criarImagem();
+        }
 
+        showImages(reDraw(imagens));
+        // showImages(imagens);
         System.out.println("...Runing...");
+
+        // int A = sysIn.nextInt();
+        // System.out.println("res: "+A);
 
     }
 
-    private static ImageIcon criarImagem() {
+    private static void showImages(BufferedImage[] imagens){
+        JFrame rosmiFrame = new JFrame("ROSMI");
+
+        JPanel subPanel = new JPanel();
+
+        subPanel.setBackground (Color.BLACK);
+
+        JLabel [] labels = new JLabel[9];
+
+        for(int I=0;I<9;I++){
+            labels[I] = new JLabel (new ImageIcon(imagens[I]));
+            subPanel.add (labels[I]);
+        }
+
+        rosmiFrame.setSize(917,917);
+
+        rosmiFrame.setVisible(true);  
+
+        rosmiFrame.add(subPanel);
+
+    }
+
+    private static BufferedImage[] reDraw(BufferedImage[] images){
+        
+        BufferedImage [] newImages = cpBufferedArray(images);
+
+        for(int I=0;I<newImages.length;I++){
+            if(I+3 < 9){
+                // images[I+3].createGraphics().drawImage(newImages[I], 0, 0, null);
+                newImages[I].createGraphics().drawImage(images[I+3], 0, 0, null);
+                // conteudo de newImagens[I] passa pra imagens[I+3]
+            }
+            if(I-2 > 0){
+                newImages[I-2].createGraphics().drawImage(images[I], 0, 0, null);
+                // images[I].createGraphics().drawImage(newImages[I-2], 0, 0, null);
+                // conteudo de newImagens[i-2] recebe imagens[I]
+            }
+        }
+
+        return newImages;
+
+    }
+
+    private static BufferedImage criarImagem() {
         
         Draw draw = new Draw();
 
@@ -73,7 +100,28 @@ public class main{
         g.drawRect(draws[0], draws[1], draws[2], draws[3]);
 
         // g.create(200, 100, 300, 300);
-        return new ImageIcon( buffer );
+        return buffer;
+    }
+
+    //utils
+
+    public static BufferedImage[] cpBufferedArray(BufferedImage[] imagens){
+
+        BufferedImage []newArray = new BufferedImage[9];
+
+        for(int I=0;I<9;I++){
+            newArray[I] = deepCopy(imagens[I]);
+        }
+
+        return newArray;
+
+    }
+
+    static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
 }
