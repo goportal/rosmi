@@ -63,11 +63,11 @@ public class main{
         for(int I=0;I<newImages.length;I++){
             if(I+3 < 9){
                 // images[I+3].createGraphics().drawImage(newImages[I], 0, 0, null);
-                newImages[I].createGraphics().drawImage(images[I+3], 0, 0, null);
+                newImages[I].createGraphics().drawImage(imgOverlap(newImages[I],images[I+3]), 0, 0, null);
                 // conteudo de newImagens[I] passa pra imagens[I+3]
             }
             if(I-2 > 0){
-                newImages[I-2].createGraphics().drawImage(images[I], 0, 0, null);
+                newImages[I-2].createGraphics().drawImage(imgOverlap(newImages[I-2],images[I]), 0, 0, null);
                 // images[I].createGraphics().drawImage(newImages[I-2], 0, 0, null);
                 // conteudo de newImagens[i-2] recebe imagens[I]
             }
@@ -122,6 +122,21 @@ public class main{
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    static BufferedImage imgOverlap(BufferedImage img1, BufferedImage img2){
+
+        for(int I=0;I<img1.getHeight();I++){
+            for(int I2=0;I2<img1.getWidth();I2++){
+                if(img1.getRGB(I, I2)!= -1){
+                    img2.setRGB(I, I2, -16777216);
+                    // System.out.println("o rgb que veio: "+img1.getRGB(I, I2));
+                }
+            }
+        }
+
+        return img2;
+
     }
 
 }
