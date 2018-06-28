@@ -25,8 +25,12 @@ public class main{
             imagens[I] = criarImagem();
         }
 
+        // basta comentar esse showImages e descomentar o abaixo
+        showImages(imagens);
+        try { Thread.sleep (1000); } catch (InterruptedException ex) {}
         showImages(reDraw(imagens));
-        // showImages(imagens);
+        
+
         System.out.println("...Runing...");
 
         // int A = sysIn.nextInt();
@@ -60,20 +64,49 @@ public class main{
         
         BufferedImage [] newImages = cpBufferedArray(images);
 
+        // Troca verde
         for(int I=0;I<newImages.length;I++){
-            if(I+3 < 9){
-                // images[I+3].createGraphics().drawImage(newImages[I], 0, 0, null);
-                newImages[I].createGraphics().drawImage(imgOverlap(newImages[I],images[I+3]), 0, 0, null);
-                // conteudo de newImagens[I] passa pra imagens[I+3]
-            }
-            if(I-2 > 0){
-                newImages[I-2].createGraphics().drawImage(imgOverlap(newImages[I-2],images[I]), 0, 0, null);
-                // images[I].createGraphics().drawImage(newImages[I-2], 0, 0, null);
-                // conteudo de newImagens[i-2] recebe imagens[I]
+            if(I+2 < 9){
+                if(I != 0 && I != 3 && I != 6){
+                    newImages[I].createGraphics().drawImage(imgOverlap(images[I+2],images[I]), 0, 0, null);
+                    // int A= I+2;
+                    // System.out.println(I+" -recebe- "+A);
+                }
             }
         }
 
-        return newImages;
+        BufferedImage [] newImages2 = cpBufferedArray(newImages);
+
+        // showImages(newImages2);
+        // try { Thread.sleep (1000); } catch (InterruptedException ex) {}
+
+        // Troca azul
+        for(int I=0;I<newImages.length;I++){
+            if(I+3 < 9){
+                newImages2[I+3].createGraphics().drawImage(imgOverlap(newImages[I],newImages[I+3]), 0, 0, null);
+                // int A=I+3;
+                // System.out.println(A+" -recebe- "+I);
+            }
+
+        }
+
+        BufferedImage [] newImages3 = cpBufferedArray(newImages2);
+
+        // showImages(newImages3);
+        // try { Thread.sleep (1000); } catch (InterruptedException ex) {}
+
+        // Troca vermelha
+        for(int I=0;I<newImages.length;I++){
+            if(I+2 < 9){
+                if(I == 0 || I == 3 || I == 6){
+                    newImages3[I].createGraphics().drawImage(imgOverlap(newImages2[I+2],newImages2[I]), 0, 0, null);
+                    // int A= I+2;
+                    // System.out.println(I+" -recebe- "+A);
+                }
+            }
+        }
+
+        return newImages3;
 
     }
 
@@ -103,7 +136,7 @@ public class main{
         return buffer;
     }
 
-    //utils
+    //Utils
 
     public static BufferedImage[] cpBufferedArray(BufferedImage[] imagens){
 
@@ -126,16 +159,18 @@ public class main{
 
     static BufferedImage imgOverlap(BufferedImage img1, BufferedImage img2){
 
+        BufferedImage imgAux = deepCopy(img2);
+
         for(int I=0;I<img1.getHeight();I++){
             for(int I2=0;I2<img1.getWidth();I2++){
                 if(img1.getRGB(I, I2)!= -1){
-                    img2.setRGB(I, I2, -16777216);
+                    imgAux.setRGB(I, I2, -16777216);
                     // System.out.println("o rgb que veio: "+img1.getRGB(I, I2));
                 }
             }
         }
 
-        return img2;
+        return imgAux;
 
     }
 
