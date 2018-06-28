@@ -62,6 +62,8 @@ public class main{
 
     private static BufferedImage[] reDraw(BufferedImage[] images){
         
+        BufferedImage [] storedImages = cpBufferedArray(images);
+
         BufferedImage [] newImages = cpBufferedArray(images);
 
         // Troca verde
@@ -75,6 +77,7 @@ public class main{
             }
         }
 
+        //todo: não tenho certeza se posso armazenar assim a nivel de abstração, estou otilizando pois o transpace das imagens nao deve ser cumulativo.
         BufferedImage [] newImages2 = cpBufferedArray(newImages);
 
         // showImages(newImages2);
@@ -106,7 +109,18 @@ public class main{
             }
         }
 
-        return newImages3;
+
+        // segmentos complementares.
+
+        BufferedImage [] newImages4 = cpBufferedArray(newImages3);
+
+        for(int I=0;I<storedImages.length;I++){
+            newImages4[I].createGraphics().drawImage(imgOverlap(storedImages[8-I],newImages4[I]), 0, 0, null);
+            int A= 8-I;
+            System.out.println(I+" -recebe- "+A);
+        }
+
+        return newImages4;
 
     }
 
