@@ -1,5 +1,18 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 public class CentralProcessor extends Thread{
 
+    int aux = 0;
     Processor []processors;
 
     public CentralProcessor(Processor[] tProcessors){
@@ -11,14 +24,14 @@ public class CentralProcessor extends Thread{
         BufferedImage [] imagens = new BufferedImage[9];
 
         for(int I=0;I<processors.length;I++){
-            this.processors[I].image = criarImagem();
+            this.processors[I].imagem = criarImagem();
         }
 
         showImages(imagens);
 
     }
 
-    private static BufferedImage criarImagem() {
+    private BufferedImage criarImagem() {
         
         Draw draw = new Draw();
 

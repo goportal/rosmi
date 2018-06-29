@@ -1,4 +1,6 @@
 import java.awt.image.BufferedImage;
+import java.awt.Color;
+import java.awt.*;
 
 public class Processor extends Thread{
 
@@ -10,9 +12,9 @@ public class Processor extends Thread{
     Processor(int sId){
         this.id = sId;
         this.imagem = new BufferedImage( 300, 300, BufferedImage.TYPE_INT_RGB );
-        Graphics g = buffer.createGraphics();
+        Graphics g = imagem.createGraphics();
         g.setColor( Color.WHITE );
-        g.fillRect( 0, 0, width, height );
+        g.fillRect( 0, 0, 300, 300 );
     }
 
     public void run(){
@@ -36,7 +38,7 @@ public class Processor extends Thread{
     }
     
     public void receiveImage(BufferedImage newImg){
-        this.receivedImagem = newImg;
+        this.receivedImage = newImg;
     }
 
     public void mergeImages(BufferedImage img1, BufferedImage img2){
@@ -50,7 +52,7 @@ public class Processor extends Thread{
             }
         }
 
-        return imgAux;
+       // return img2;
 
     }
 
