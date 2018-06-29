@@ -27,6 +27,10 @@ public class CentralProcessor extends Thread{
             this.processors[I].imagem = criarImagem();
         }
 
+        for(int I=0;I<processors.length;I++){
+            imagens[I] = processors[I].receivedImage();
+        }
+
         showImages(imagens);
 
     }
