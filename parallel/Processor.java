@@ -20,16 +20,16 @@ public class Processor extends Thread{
     public void run(){
 
         System.out.println("start pro");
-        Thread.yield();
+        //Thread.yield();
 
-        while(!start){};
+        // while(!start){};
         System.out.println("received img");
 
         mergeImages(receivedImage, imagem);
         sendImage();
 
         System.out.println("ending pro");
-        Thread.yield();
+        //Thread.yield();
         
     }
 

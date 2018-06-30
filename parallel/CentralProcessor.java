@@ -21,17 +21,26 @@ public class CentralProcessor extends Thread{
 
     public void run(){
 
-        BufferedImage [] imagens = new BufferedImage[9];
+        System.out.println("ola");
+
+        BufferedImage [] storedImagens = new BufferedImage[9];
 
         for(int I=0;I<processors.length;I++){
-            this.processors[I].imagem = criarImagem();
+            this.processors[I].receiveImage(criarImagem());
         }
 
         for(int I=0;I<processors.length;I++){
-            imagens[I] = processors[I].receivedImage();
+            this.processors[I].run();
+            this.processors[I].start = true;
         }
 
-        showImages(imagens);
+        for(int I=0;I<processors.length;I++){
+            storedImagens[I] = processors[I].imagem;
+        }
+
+        try{ Thread.sleep(2000);} catch(Exception E){};
+
+        showImages(storedImagens);
 
     }
 
@@ -60,11 +69,6 @@ public class CentralProcessor extends Thread{
         // g.create(200, 100, 300, 300);
         return buffer;
     }
-
-
-
-
-
 
     private static void showImages(BufferedImage[] imagens){
         JFrame rosmiFrame = new JFrame("ROSMI");

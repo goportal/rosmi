@@ -7,6 +7,7 @@ public class MpSoc{
             processors[I] = new Processor(I);
         }
         cProcessor = new CentralProcessor(processors);
+        cProcessor.run();
     }
      
 }
