@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
@@ -12,8 +14,9 @@ import javax.swing.SwingConstants;
 
 public class CentralProcessor extends Thread{
 
+    int count = 0;
     int aux = 0;
-    Processor []processors;
+    Processor [] processors;
 
     public CentralProcessor(Processor[] tProcessors){
         this.processors = tProcessors;
@@ -27,21 +30,42 @@ public class CentralProcessor extends Thread{
 
         for(int I=0;I<processors.length;I++){
             this.processors[I].receiveImage(criarImagem());
+            this.processors[I].start();
         }
 
-        for(int I=0;I<processors.length;I++){
-            this.processors[I].run();
-            this.processors[I].start = true;
-        }
+        try{ 
+            
+			while(this.count< this.processors.length){ 
+                // System.out.println("processors length: "+processors.length+" aux length: "+count);
+                Thread.sleep(500);
+            }
+		}catch(InterruptedException e){ 
+			notifyAll(); 
+		}
 
+    
         for(int I=0;I<processors.length;I++){
             storedImagens[I] = processors[I].imagem;
         }
 
-        try{ Thread.sleep(2000);} catch(Exception E){};
+        // Troca verde
+        // for(int I=0;I<storedImagens.length;I++){
+        //     if(I+2 < 9){
+        //         if(I != 0 && I != 3 && I != 6){
+        //             // newImages[I].createGraphics().drawImage(imgOverlap(images[I+2],images[I]), 0, 0, null);
+        //             processors[I].receiveImage(processors[I+2].sendImage());
+        //             // int A= I+2;
+        //             // System.out.println(I+" -recebe- "+A);
+        //         }
+        //     }
+        // }
 
         showImages(storedImagens);
 
+    }
+
+    public synchronized void receiveImg(BufferedImage img){
+        count++;
     }
 
     private BufferedImage criarImagem() {
@@ -65,8 +89,7 @@ public class CentralProcessor extends Thread{
 
         draws = draw.get(aux++);
         g.drawRect(draws[0], draws[1], draws[2], draws[3]);
-
-        // g.create(200, 100, 300, 300);
+        
         return buffer;
     }
 
@@ -91,6 +114,5 @@ public class CentralProcessor extends Thread{
         rosmiFrame.add(subPanel);
 
     }
-
 
 }

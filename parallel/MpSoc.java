@@ -3,11 +3,11 @@ public class MpSoc{
     CentralProcessor cProcessor;
 
     MpSoc(){
-        for(int I=0;I<processors.length;I++){
-            processors[I] = new Processor(I);
-        }
         cProcessor = new CentralProcessor(processors);
-        cProcessor.run();
+        for(int I=0;I<processors.length;I++){
+            processors[I] = new Processor(I,cProcessor);
+        }
+        cProcessor.start();
     }
      
 }

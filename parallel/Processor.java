@@ -1,16 +1,21 @@
 import java.awt.image.BufferedImage;
+import java.util.concurrent.locks.ReentrantLock;
 import java.awt.Color;
 import java.awt.*;
 
 public class Processor extends Thread{
 
+    CentralProcessor cProcessor;
     int id;
     BufferedImage receivedImage;
     BufferedImage imagem;
-    boolean start = false;
+    boolean executar = true;
+    ReentrantLock lock = new ReentrantLock();
 
-    Processor(int sId){
+    Processor(int sId,CentralProcessor cp){
+        this.cProcessor = cp;
         this.id = sId;
+
         this.imagem = new BufferedImage( 300, 300, BufferedImage.TYPE_INT_RGB );
         Graphics g = imagem.createGraphics();
         g.setColor( Color.WHITE );
@@ -19,22 +24,33 @@ public class Processor extends Thread{
 
     public void run(){
 
-        System.out.println("start pro");
-        //Thread.yield();
+        while(true){
+            if(this.id == 1){
+                // Thread.yield();
+                try{ Thread.sleep(3000);} catch(Exception E){};
+            }
+            Thread.yield();
+            while(!executar){}
+            System.out.println("processor: "+this.id);
+            // Thread.yield();
 
-        // while(!start){};
-        System.out.println("received img");
+            
 
-        mergeImages(receivedImage, imagem);
-        sendImage();
+            // while(!start){};
+            // System.out.println("received img");
 
-        System.out.println("ending pro");
-        //Thread.yield();
+            mergeImages(receivedImage, imagem);
+            sendImage();
+
+            // System.out.println("ending pro");
+            //lock.unlock();
+            executar = false;
+        }
         
     }
 
-    public BufferedImage sendImage(){
-        return this.imagem;
+    public void sendImage(){
+        cProcessor.receiveImg(imagem);
     }
     
     public void receiveImage(BufferedImage newImg){
