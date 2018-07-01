@@ -1,7 +1,19 @@
-import java.awt.image.BufferedImage;
-import java.util.concurrent.locks.ReentrantLock;
-import java.awt.Color;
+// import java.awt.image.BufferedImage;
+// import java.util.concurrent.locks.ReentrantLock;
+// import java.awt.Color;
+// import java.awt.*;
+
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class Processor extends Thread{
 
@@ -10,7 +22,7 @@ public class Processor extends Thread{
     BufferedImage receivedImage;
     BufferedImage imagem;
     boolean executar = true;
-    ReentrantLock lock = new ReentrantLock();
+    // ReentrantLock lock = new ReentrantLock();
 
     Processor(int sId,CentralProcessor cp){
         this.cProcessor = cp;
@@ -25,12 +37,12 @@ public class Processor extends Thread{
     public void run(){
 
         while(true){
-            if(this.id == 1){
-                // Thread.yield();
-                try{ Thread.sleep(3000);} catch(Exception E){};
-            }
+            // if(this.id == 1){
+            //     // Thread.yield();
+            //     try{ Thread.sleep(3000);} catch(Exception E){};
+            // }
             Thread.yield();
-            while(!executar){}
+            while(!executar){try{Thread.sleep(2000);}catch(Exception X){}}
             System.out.println("processor: "+this.id);
             // Thread.yield();
 
@@ -41,7 +53,7 @@ public class Processor extends Thread{
 
             mergeImages(receivedImage, imagem);
             sendImage();
-
+            
             // System.out.println("ending pro");
             //lock.unlock();
             executar = false;
@@ -54,7 +66,11 @@ public class Processor extends Thread{
     }
     
     public void receiveImage(BufferedImage newImg){
-        this.receivedImage = newImg;
+        this.receivedImage = deepCopy(newImg);
+    }
+
+    public BufferedImage getImage(){
+        return this.imagem;
     }
 
     public void mergeImages(BufferedImage img1, BufferedImage img2){
@@ -67,9 +83,15 @@ public class Processor extends Thread{
                 }
             }
         }
+    }
 
-       // return img2;
+    //UTILS
 
+    static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
 }

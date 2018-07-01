@@ -27,40 +27,91 @@ public class CentralProcessor extends Thread{
         System.out.println("ola");
 
         BufferedImage [] storedImagens = new BufferedImage[9];
+        BufferedImage [] theImagens = new BufferedImage[9];
 
         for(int I=0;I<processors.length;I++){
             this.processors[I].receiveImage(criarImagem());
             this.processors[I].start();
         }
 
-        try{ 
-            
-			while(this.count< this.processors.length){ 
+        for(int I=0;I<processors.length;I++){
+            theImagens[I] = processors[I].imagem;
+            storedImagens[I] = criarImagem();
+        }
+
+        try{
+			while(this.count< this.processors.length){
                 // System.out.println("processors length: "+processors.length+" aux length: "+count);
                 Thread.sleep(500);
             }
-		}catch(InterruptedException e){ 
-			notifyAll(); 
-		}
-
-    
-        for(int I=0;I<processors.length;I++){
-            storedImagens[I] = processors[I].imagem;
+		}catch(InterruptedException E){
+			notifyAll();
+        }
+        count = 0;
+        showImages(theImagens);
+        
+        
+        // Troca verde             <------------------------------------------------------------------------------------
+        for(int I=0;I<storedImagens.length;I++){
+            if(I+2 < 9){
+                if(I != 0 && I != 3 && I != 6){
+                    // newImages[I].createGraphics().drawImage(imgOverlap(images[I+2],images[I]), 0, 0, null);
+                    processors[I].receiveImage(processors[I+2].getImage());
+                    // int A= I+2;
+                    // System.out.println(I+" -recebe- "+A);
+                }
+            }
         }
 
-        // Troca verde
-        // for(int I=0;I<storedImagens.length;I++){
-        //     if(I+2 < 9){
-        //         if(I != 0 && I != 3 && I != 6){
-        //             // newImages[I].createGraphics().drawImage(imgOverlap(images[I+2],images[I]), 0, 0, null);
-        //             processors[I].receiveImage(processors[I+2].sendImage());
-        //             // int A= I+2;
-        //             // System.out.println(I+" -recebe- "+A);
-        //         }
-        //     }
-        // }
+        executarTarefas();
+        count = 0;
+        showImages(theImagens);
 
-        showImages(storedImagens);
+        // Troca azul              <------------------------------------------------------------------------------------
+        for(int I=0;I<storedImagens.length;I++){
+            if(I+3 < 9){
+                processors[I+3].receiveImage(processors[I].getImage());
+                // newImages2[I+3].createGraphics().drawImage(imgOverlap(newImages[I],newImages[I+3]), 0, 0, null);
+                // int A=I+3;
+                // System.out.println(A+" -recebe- "+I);
+                // if(I == 0 || I==1 || I==2){
+                //     processors[I].receiveImage(NEWIMG());
+                // }
+            }
+        }
+        executarTarefas();
+        count = 0;
+        showImages(theImagens);
+
+
+        // Troca vermelha              <------------------------------------------------------------------------------------
+        for(int I=0;I<storedImagens.length;I++){
+            if(I+2 < 9){
+                if(I == 0 || I == 3 || I == 6){
+                    processors[I].receiveImage(processors[I+2].getImage());
+                    // newImages3[I].createGraphics().drawImage(imgOverlap(newImages2[I+2],newImages2[I]), 0, 0, null);
+                    // int A= I+2;
+                    // System.out.println(I+" -recebe- "+A);
+                }
+            }
+        }
+
+        executarTarefas();
+        count = 0;
+        showImages(theImagens);
+
+        // segmentos complementares.              <------------------------------------------------------------------------------------
+        for(int I=0;I<storedImagens.length;I++){
+            processors[I].receiveImage(storedImagens[8-I]);
+            // newImages4[I].createGraphics().drawImage(imgOverlap(storedImages[8-I],newImages4[I]), 0, 0, null);
+            // int A= 8-I;
+            // System.out.println(I+" -recebe- "+A);
+        }
+
+        executarTarefas();
+        count = 0;
+        // showImages(storedImagens);
+        showImages(theImagens);
 
     }
 
@@ -89,7 +140,11 @@ public class CentralProcessor extends Thread{
 
         draws = draw.get(aux++);
         g.drawRect(draws[0], draws[1], draws[2], draws[3]);
-        
+
+        if(aux>= 27){
+            aux=0;
+        }
+
         return buffer;
     }
 
@@ -114,5 +169,43 @@ public class CentralProcessor extends Thread{
         rosmiFrame.add(subPanel);
 
     }
+
+    public void executarTarefas(){
+        for(int I=0;I<this.processors.length;I++){
+            this.processors[I].executar = true;
+        }
+
+        try{ 
+			while(this.count< this.processors.length){
+                // System.out.println("processors length: "+processors.length+" aux length: "+count);
+                Thread.sleep(100);
+            }
+		}catch(InterruptedException E){
+			notifyAll();
+		}
+
+    }
+
+    // Utils
+
+    // public static BufferedImage[] cpBufferedArray(BufferedImage[] imagens){
+
+    //     BufferedImage []newArray = new BufferedImage[9];
+
+    //     for(int I=0;I<9;I++){
+    //         newArray[I] = deepCopy(imagens[I]);
+    //     }
+
+    //     return newArray;
+
+    // }
+
+    // static BufferedImage deepCopy(BufferedImage bi) {
+    //     ColorModel cm = bi.getColorModel();
+    //     boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+    //     WritableRaster raster = bi.copyData(null);
+    //     return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    // }
+
 
 }
