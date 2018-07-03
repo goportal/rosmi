@@ -24,15 +24,18 @@ public class CentralProcessor extends Thread{
 
     public void run(){
 
-        System.out.println("ola");
-
-        BufferedImage [] storedImagens = new BufferedImage[9];
-        BufferedImage [] theImagens = new BufferedImage[9];
+        System.out.println("Start CP");
 
         for(int I=0;I<processors.length;I++){
             this.processors[I].receiveImage(criarImagem());
-            this.processors[I].start();
         }
+
+        // for(int I=0;I<processors.length;I++){
+        //     this.processors[I].start();
+        // }
+
+        BufferedImage [] storedImagens = new BufferedImage[9];
+        BufferedImage [] theImagens = new BufferedImage[9];
 
         for(int I=0;I<processors.length;I++){
             theImagens[I] = processors[I].imagem;
@@ -48,7 +51,7 @@ public class CentralProcessor extends Thread{
 			notifyAll();
         }
         count = 0;
-        showImages(theImagens);
+        // showImages(theImagens);
         
         
         // Troca verde             <------------------------------------------------------------------------------------
@@ -65,7 +68,7 @@ public class CentralProcessor extends Thread{
 
         executarTarefas();
         count = 0;
-        showImages(theImagens);
+        // showImages(theImagens);
 
         // Troca azul              <------------------------------------------------------------------------------------
         for(int I=0;I<storedImagens.length;I++){
@@ -81,7 +84,7 @@ public class CentralProcessor extends Thread{
         }
         executarTarefas();
         count = 0;
-        showImages(theImagens);
+        // showImages(theImagens);
 
 
         // Troca vermelha              <------------------------------------------------------------------------------------
@@ -98,7 +101,7 @@ public class CentralProcessor extends Thread{
 
         executarTarefas();
         count = 0;
-        showImages(theImagens);
+        // showImages(theImagens);
 
         // segmentos complementares.              <------------------------------------------------------------------------------------
         for(int I=0;I<storedImagens.length;I++){

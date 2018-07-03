@@ -21,7 +21,7 @@ public class Processor extends Thread{
     int id;
     BufferedImage receivedImage;
     BufferedImage imagem;
-    boolean executar = true;
+    boolean executar = false;
     // ReentrantLock lock = new ReentrantLock();
 
     Processor(int sId,CentralProcessor cp){
@@ -37,13 +37,24 @@ public class Processor extends Thread{
     public void run(){
 
         while(true){
+            System.out.println("Start PE" + id);
+
             // if(this.id == 1){
             //     // Thread.yield();
             //     try{ Thread.sleep(3000);} catch(Exception E){};
             // }
-            Thread.yield();
-            while(!executar){try{Thread.sleep(2000);}catch(Exception X){}}
-            System.out.println("processor: "+this.id);
+            // Thread.yield();
+
+            while(!executar){
+                try{
+                    Thread.sleep(2000);
+                }catch(Exception X){
+                    System.out.println("ERROR: "+X.getMessage());
+                }
+            }
+            System.out.println("ReceiveAll PE" + id);
+
+            // System.out.println("processor: "+this.id);
             // Thread.yield();
 
             
@@ -53,7 +64,8 @@ public class Processor extends Thread{
 
             mergeImages(receivedImage, imagem);
             sendImage();
-            
+
+            System.out.println("Ending PE" + id);
             // System.out.println("ending pro");
             //lock.unlock();
             executar = false;
@@ -65,8 +77,9 @@ public class Processor extends Thread{
         cProcessor.receiveImg(imagem);
     }
     
-    public void receiveImage(BufferedImage newImg){
+    public synchronized void receiveImage(BufferedImage newImg){
         this.receivedImage = deepCopy(newImg);
+        this.executar = true;
     }
 
     public BufferedImage getImage(){
