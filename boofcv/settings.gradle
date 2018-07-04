@@ -1,0 +1,31 @@
+include 'examples','demonstrations','applications',
+
+        'main:boofcv-ip','main:boofcv-io','main:boofcv-feature','main:boofcv-geo','main:boofcv-calibration',
+        'main:boofcv-sfm','main:boofcv-recognition','main:boofcv-simulation',
+        'main:checks','main:autocode','main:boofcv-learning',
+        'integration:boofcv-all','main:boofcv-core',
+
+        'integration:boofcv-javacv',"integration:boofcv-WebcamCapture",
+        'integration:boofcv-jcodec','integration:boofcv-swing',
+        'integration:boofcv-ffmpeg'
+
+// JavaFX isn't installed universally yet.  If it exists on the system it will be built
+try {
+    Class.forName("javafx.scene.image.Image");
+    include 'integration:boofcv-javafx'
+} catch(Exception ignore) {
+    logger.warn('Skipping integration/javafx because JavaFX is not installed in this JDK')
+}
+
+// these are packages which require external files that must be manually downloaded or configured to compile
+if (System.getenv()['ANDROID_HOME']) {
+    include 'integration:boofcv-android'
+} else {
+    logger.warn('Skipping integration/android because ANDROID_HOME has not been set!  See integration/android/readme.txt')
+}
+
+if( file('./integration/boofcv-openkinect/libfreenect').exists()) {
+    include 'integration:boofcv-openkinect'
+} else {
+    logger.warn('Skipping integration/boofcv-openkinect because boofcv-openkinect/libfreenect is missing! See integration/openkinect/readme.txt')
+}
